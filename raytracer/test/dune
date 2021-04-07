@@ -1,0 +1,4 @@
+(library
+ (name test_raytracer)
+ (libraries alcotest proj.raytracer)
+ (synopsis "Tests for sub2"))

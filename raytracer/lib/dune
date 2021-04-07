@@ -1,0 +1,4 @@
+(library
+ (name raytracer)
+ (public_name proj.raytracer)
+ (synopsis "Raytracer Challenge"))
