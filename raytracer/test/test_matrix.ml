@@ -273,13 +273,28 @@ let test_inverse_matrix () =
   true
   (Raytracer.Matrix.equal (Raytracer.Matrix.inverse m1) inv_m1 && Raytracer.Matrix.equal (Raytracer.Matrix.inverse m2) inv_m2)
 
-let test_a_dot_a_inv () =
+let test_product_with_inverse () =
   let a = [|
-    [||];
-    [||];
-    [||];
-    [||];
+    [|3.; -9.; 7.; 3.|];
+    [|3.; -8.; 2.; -9.|];
+    [|-4.; 4.; 4.; 1.|];
+    [|-6.; 5.; -1.; 1.|];
   |] in
+  let b = [|
+    [|8.; 2.; 2.; 2.|];
+    [|3.; -1.; 7.; 0.|];
+    [|7.; 0.; 5.; 4.|];
+    [|6.; -2.; 0.; 5.|];
+  |] in
+  let c = Raytracer.Matrix.mult_m a b in
+  (* Raytracer.Matrix.print a;
+  Raytracer.Matrix.print (Raytracer.Matrix.mult_m c (Raytracer.Matrix.inverse b)); *)
+  let t = Raytracer.Matrix.equal a (Raytracer.Matrix.mult_m c (Raytracer.Matrix.inverse b)) in
+  Alcotest.(check bool)
+  "Multiplying a product by its inverse"
+  true
+  t
+
 
 let tests =
   [
@@ -326,4 +341,7 @@ let tests =
     ( "Testing inverse for two 4x4 matrix",
       `Quick,
       test_inverse_matrix);
+    ( "Multiplying a product by its inverse",
+      `Quick,
+      test_product_with_inverse);
   ]

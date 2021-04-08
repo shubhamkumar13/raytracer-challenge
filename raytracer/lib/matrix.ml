@@ -1,10 +1,7 @@
 module Float = struct
   include Float
-  let equal = fun a b ->
-    if (Float.abs @@ a -. b) <= 0.001 then
-      true
-    else
-      false
+
+  let equal a b = Float.abs @@ (a -. b) <= 0.001
 end
 
 type 'a matrix = 'a array array
@@ -42,7 +39,7 @@ let equal : float matrix -> float matrix -> bool =
   let decision = ref true in
   for i = 0 to pred @@ Array.length m1 do
     for j = 0 to pred @@ Array.length m1.(0) do
-      decision := Float.equal m1.(i).(j) m2.(i).(j) && !decision
+      decision := !decision && Float.equal m1.(i).(j) m2.(i).(j);
     done
   done;
   !decision
@@ -142,21 +139,20 @@ let cofactor : float matrix -> int -> int -> float =
  fun m row col ->
   if Int.rem (row + col) 2 = 0 then minor m row col else -1. *. minor m row col
 
-let is_invertible : float matrix -> bool = fun m ->
-  match det m with
-  | 0. -> false
-  | _ -> true
+let is_invertible : float matrix -> bool =
+ fun m -> match det m with 0. -> false | _ -> true
 
-let inverse : float matrix -> float matrix = fun m ->
+let inverse : float matrix -> float matrix =
+ fun m ->
   match is_invertible m with
   | false -> failwith "Matrix is not invertible"
-  | _ -> 
-    let m2 = Array.make_matrix (Array.length m) (Array.length m.(0)) 0. in
-    let det_m = det m in
-    for row=0 to pred @@ Array.length m do
-      for col=0 to pred @@ Array.length m do
-        let c = cofactor m row col in
-        m2.(col).(row) <- c /. det_m;
-      done
-    done;
-    m2
+  | _ ->
+      let m2 = Array.make_matrix (Array.length m) (Array.length m.(0)) 0. in
+      let det_m = det m in
+      for row = 0 to pred @@ Array.length m do
+        for col = 0 to pred @@ Array.length m do
+          let c = cofactor m row col in
+          m2.(col).(row) <- c /. det_m
+        done
+      done;
+      m2
